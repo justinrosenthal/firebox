@@ -5,7 +5,7 @@ var APP_DIR = path.resolve(__dirname);
 var config = {
   entry: APP_DIR + '/src/index.jsx',
   output: {
-    path: APP_DIR + '/public/static/js',
+    path: APP_DIR + '/public/js',
     filename: 'bundle.js'
   },
   module: {
@@ -20,10 +20,14 @@ var config = {
       }
     ]
   },
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.json'],
+  },
   externals: {
+    'firebase': 'firebase',
     'react': 'React',
     'react-dom': 'ReactDOM',
-  }
+  },
 };
 
 module.exports = config;
