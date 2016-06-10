@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 import React from 'react'
+import {Link} from 'react-router'
 
 
 const style = {
@@ -28,7 +29,7 @@ const style = {
 
   submitButton: {
     height: 36,
-    margin: '25px 0px',
+    margin: '25px 0px 0px',
     padding: 0,
     fontSize: 14,
     fontWeight: 'bold',
@@ -38,11 +39,18 @@ const style = {
   },
 
   error: {
-    margin: 0,
+    margin: '25px 0px 0px',
     color: 'red',
     fontWeight: 'bold',
     textAlign: 'center',
-  }
+  },
+
+  swapAuthLink: {
+    display: 'block',
+    color: '#AAAAAA',
+    textAlign: 'center',
+    marginTop: 10,
+  },
 }
 
 
@@ -87,9 +95,6 @@ const Login = React.createClass({
     // Attempt to signup the user and send a welcome email
     firebase.auth()
       .signInWithEmailAndPassword(this.state.email, this.state.password)
-      .then((user) => {
-        alert(user.uid)
-      })
       .catch((error) => {
         this.setState({error: error.message})
       })
@@ -120,6 +125,9 @@ const Login = React.createClass({
             style={style.submitButton}
             value="Login" />
         </form>
+        <Link to="/signup" style={style.swapAuthLink}>
+          Need an account? Sign up.
+        </Link>
       </Card>
     )
   }
@@ -207,6 +215,9 @@ const SignUp = React.createClass({
             style={style.submitButton}
             value="Sign Up" />
         </form>
+        <Link to="/login" style={style.swapAuthLink}>
+          Already have an account? Login.
+        </Link>
       </Card>
     )
   }
