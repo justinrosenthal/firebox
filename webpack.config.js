@@ -27,6 +27,7 @@ var config = {
     'firebase': 'firebase',
     'react': 'React',
     'react-dom': 'ReactDOM',
+    'react-router': 'ReactRouter',
   },
 };
 
