@@ -24,6 +24,7 @@ var config = {
     extensions: ['', '.js', '.jsx', '.json'],
   },
   externals: {
+    'lodash': '_',
     'firebase': 'firebase',
     'react': 'React',
     'react-dom': 'ReactDOM',
