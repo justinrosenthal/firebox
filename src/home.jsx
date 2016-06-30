@@ -3,7 +3,7 @@ import firebase from 'firebase'
 import React from 'react'
 import {Link} from 'react-router'
 
-import FileSystem from './filesystem'
+import {File, Directory, FileSystem} from './filesystem'
 
 
 const style = {
@@ -22,11 +22,6 @@ const style = {
 const Home = React.createClass({
   componentWillMount() {
     this.fs = new FileSystem(this.props.user)
-    this.fs.start()
-  },
-
-  componentWillUnmount() {
-    this.fs.stop()
   },
 
   render() {
@@ -83,20 +78,18 @@ const Nav = React.createClass({
 const FileManager = React.createClass({
   getInitialState() {
     return {
-      files: [],
+      nodes: [],
     }
   },
 
   componentWillMount() {
-    this.props.fileSystem.on('change', this._onFileSystemChange)
+    this.curDir = this.props.fileSystem.root
+    this.curDir.register(children => {
+      this.setState({nodes: children})
+    })
   },
 
   componentWillUnmount() {
-    this.props.fileSystem.removeListener('change', this._onFileSystemChange)
-  },
-
-  _onFileSystemChange() {
-    this.setState({files: this.props.fileSystem.files})
   },
 
   render() {
@@ -106,15 +99,25 @@ const FileManager = React.createClass({
           <tr><th>Name</th><th>Created</th><th>Modified</th></tr>
         </thead>
         <tbody>
-          {this.state.files.map(function(file) {
-            var data = file.data
-            return (
-              <tr key={file.key}>
-                <td><a href={data.downloadURL} target="_blank">{data.filename}</a></td>
-                <td>{new Date(data.timeCreated).toLocaleString()}</td>
-                <td>{new Date(data.timeModified).toLocaleString()}</td>
-              </tr>
-            )
+          {this.state.nodes.map(function(node) {
+            if (node instanceof File) {
+              var data = node.data
+              return (
+                <tr key={node.ref.key}>
+                  <td><a href={data.downloadURL} target="_blank">{data.filename}</a></td>
+                  <td>{new Date(data.timeCreated).toLocaleString()}</td>
+                  <td>{new Date(data.timeModified).toLocaleString()}</td>
+                </tr>
+              )
+            } else if (node instanceof Directory) {
+              return (
+                <tr key={node.ref.key}>
+                  <td><a href="#" target="_blank">{node.name}</a></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              )
+            }
           })}
         </tbody>
       </table>
@@ -134,6 +137,12 @@ const ActionMenu = React.createClass({
     })
   },
 
+  promptDirectory(e) {
+    e.preventDefault()
+    var name = prompt('Enter directory name:')
+    this.props.fileSystem.root.addDirectory(name)
+  },
+
   render() {
     return (
       <div>
@@ -144,7 +153,10 @@ const ActionMenu = React.createClass({
           ref="fileInput"
           onChange={this.handleUpload}
         />
-        <a href="#" onClick={this.promptUpload}>Upload a file...</a>
+        <ul>
+          <li><a href="#" onClick={this.promptUpload}>Upload a file...</a></li>
+          <li><a href="#" onClick={this.promptDirectory}>Create a directory...</a></li>
+        </ul>
       </div>
     )
   }
