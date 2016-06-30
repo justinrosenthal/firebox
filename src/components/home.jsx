@@ -3,7 +3,7 @@ import firebase from 'firebase'
 import React from 'react'
 import {Link} from 'react-router'
 
-import {File, Directory, FileSystem} from './filesystem'
+import {File, Directory, FileSystem} from '../lib/filesystem'
 
 
 const style = {

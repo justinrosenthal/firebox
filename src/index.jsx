@@ -3,8 +3,8 @@ import React from 'react'
 import {render} from 'react-dom'
 import {browserHistory, Route, Router} from 'react-router'
 
-import {Login, SignUp} from './auth'
-import Home from './home'
+import {Login, SignUp} from './components/auth'
+import Home from './components/home'
 
 
 const App = React.createClass({
