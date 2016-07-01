@@ -140,7 +140,7 @@ const DirectoryView = React.createClass({
     return (
       <table className="table table-striped">
         <thead>
-          <tr><th>Name</th><th>Created</th><th>Modified</th></tr>
+          <tr><th></th><th>Name</th><th>Created</th><th>Modified</th></tr>
         </thead>
         <tbody>
           {this.state.nodes.map(node => {
@@ -167,6 +167,7 @@ const FileRow = React.createClass({
     var data = this.props.file.data
     return (
       <tr>
+        <td><span className="glyphicon glyphicon-file"></span></td>
         <td><a href={data.downloadURL} target="_blank">{data.filename}</a></td>
         <td>{new Date(data.timeCreated).toLocaleString()}</td>
         <td>{new Date(data.timeModified).toLocaleString()}</td>
@@ -184,6 +185,7 @@ const DirectoryRow = React.createClass({
   render() {
     return (
       <tr>
+        <td><span className="glyphicon glyphicon-folder-open"></span></td>
         <td>
           <a href="#" onClick={this.onClick}>
             {this.props.dir.name}
