@@ -42,7 +42,7 @@ const FileManager = React.createClass({
     var dir = this.currentDirectory()
     this.bs.upload(browserFile, (err, snapshot) => {
       if (err) {
-        console.log(err)
+        console.error(err)
         return
       }
 
@@ -118,12 +118,12 @@ const DirectoryView = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     if (this.props.dir !== nextProps.dir) {
+      this.props.dir.unregister(this.onDirectoryChanged)
       this.load(nextProps)
     }
   },
 
   load(props) {
-    props.dir.unregister(this.onDirectoryChanged)
     this.setState({nodes: []})
     props.dir.register(this.onDirectoryChanged)
   },

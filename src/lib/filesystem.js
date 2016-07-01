@@ -40,7 +40,7 @@ class Directory extends Node {
   }
 
   unregister(cb) {
-    _.remove(this.listeners, cb)
+    this.listeners = _.remove(this.listeners, cb)
   }
 
   addFile(name, data) {
