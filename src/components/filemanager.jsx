@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 
+import BlobStore from '../lib/blobstore'
 import {File, Directory, FileSystem} from '../lib/filesystem'
 
 
@@ -13,6 +14,7 @@ const FileManager = React.createClass({
 
   componentWillMount() {
     this.fs = new FileSystem(this.props.user)
+    this.bs = new BlobStore(this.props.user)
     this.pushDirectory(this.fs.root)
   },
 
@@ -36,6 +38,30 @@ const FileManager = React.createClass({
     }
   },
 
+  handleUpload(browserFile) {
+    var dir = this.currentDirectory()
+    this.bs.upload(browserFile, (err, snapshot) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+
+      var metadata = snapshot.metadata
+      dir.addFile(metadata.customMetadata.filename, {
+        filename: metadata.customMetadata.filename,
+        path: metadata.fullPath,
+        downloadURL: snapshot.downloadURL,
+        contentType: metadata.contentType,
+        timeCreated: metadata.timeCreated,
+        timeModified: metadata.updated,
+      })
+    })
+  },
+
+  handleCreateDirectory(name) {
+    this.currentDirectory().addDirectory(name)
+  },
+
   render() {
     return (
       <div className="row">
@@ -44,7 +70,10 @@ const FileManager = React.createClass({
           <DirectoryView dir={this.currentDirectory()} pushDirectory={this.pushDirectory} />
         </div>
         <div className="col-md-3">
-          <ActionMenu fileSystem={this.fs} />
+          <ActionMenu
+            handleUpload={this.handleUpload}
+            handleCreateDirectory={this.handleCreateDirectory}
+          />
         </div>
       </div>
     )
@@ -175,14 +204,14 @@ const ActionMenu = React.createClass({
 
   handleUpload(e) {
     _.each(e.target.files, file => {
-      this.props.fileSystem.add(file)
+      this.props.handleUpload(file)
     })
   },
 
   promptDirectory(e) {
     e.preventDefault()
     var name = prompt('Enter directory name:')
-    this.props.fileSystem.root.addDirectory(name)
+    this.props.handleCreateDirectory(name)
   },
 
   render() {

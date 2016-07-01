@@ -82,46 +82,10 @@ class Directory extends Node {
 class FileSystem {
   constructor(user) {
     this.user = user
-
-    // Hold refs to this user's personal directories
-    this.baseStorageRef = firebase.storage().ref('u/' + user.uid)
-    this.baseDatabaseRef = firebase.database().ref('files/' + user.uid)
-
-    this.root = new Directory( 'root', this.baseDatabaseRef.child('root'))
-  }
-
-  add(browserFile) {
-    // Construct a new unique filename
-    var filename = Date.now() + '-' + _.random(0, 100000000)
-    var parts = browserFile.name.split('.')
-    if (parts.length > 1) {
-      filename += '.' + parts[parts.length - 1]
-    }
-
-    // Begin upload
-    var ref = this.baseStorageRef.child(filename)
-    var uploadTask = ref.put(browserFile, {
-      customMetadata: {
-        filename: browserFile.name,
-      }
-    })
-    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, {
-      complete: () => {
-        this._onUploadSuccess(uploadTask.snapshot)
-      }
-    })
-  }
-
-  _onUploadSuccess(snapshot) {
-    var metadata = snapshot.metadata
-    this.root.addFile(metadata.customMetadata.filename, {
-      filename: metadata.customMetadata.filename,
-      path: metadata.fullPath,
-      downloadURL: snapshot.downloadURL,
-      contentType: metadata.contentType,
-      timeCreated: metadata.timeCreated,
-      timeModified: metadata.updated,
-    })
+    this.root = new Directory(
+      'root',
+      firebase.database().ref('files/' + user.uid).child('root')
+    )
   }
 }
 
