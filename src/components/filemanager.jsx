@@ -26,7 +26,13 @@ const FileManager = React.createClass({
 
   popDirectory() {
     if (this.state.stack.length > 1) {
-      this.setState({stack: this.state.stack.slice(0, this.state.stack.length)})
+      this.popToIndex(this.state.stack.length - 1)
+    }
+  },
+
+  popToIndex(i) {
+    if (i >= 0) {
+      this.setState({stack: this.state.stack.slice(0, i + 1)})
     }
   },
 
@@ -34,12 +40,38 @@ const FileManager = React.createClass({
     return (
       <div className="row">
         <div className="col-md-9">
+          <Breadcrumbs directories={this.state.stack} onClickIndex={this.popToIndex} />
           <DirectoryView dir={this.currentDirectory()} pushDirectory={this.pushDirectory} />
         </div>
         <div className="col-md-3">
           <ActionMenu fileSystem={this.fs} />
         </div>
       </div>
+    )
+  }
+})
+
+const Breadcrumbs = React.createClass({
+  onClick(i, e) {
+    e.preventDefault()
+    this.props.onClickIndex(i)
+  },
+
+  render() {
+    return (
+      <ol className="breadcrumb">
+        {this.props.directories.map((dir, i) => {
+          if (i === this.props.directories.length - 1) {
+            return <li key={dir.ref.key} className="active">{dir.name}</li>
+          } else {
+            return (
+              <li key={dir.ref.key}>
+                <a href="#" onClick={this.onClick.bind(this, i)}>{dir.name}</a>
+              </li>
+            )
+          }
+        })}
+      </ol>
     )
   }
 })
