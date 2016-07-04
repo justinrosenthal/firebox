@@ -35,8 +35,9 @@ class Directory extends Node {
 
   register(cb) {
     if (!this.loaded) {
-      this.storageRef.on('child_added', this._onChildAdded.bind(this))
-      this.storageRef.on('child_removed', this._onChildRemoved.bind(this))
+      var q = this.storageRef.orderByChild('name')
+      q.on('child_added', this._onChildAdded.bind(this))
+      q.on('child_removed', this._onChildRemoved.bind(this))
       this.loaded = true
     } else {
       cb(this.children)
@@ -69,7 +70,7 @@ class Directory extends Node {
     })
   }
 
-  _onChildAdded(data) {
+  _onChildAdded(data, prevKey) {
     var node
     switch(data.val().type) {
       case Node.FILE:
@@ -82,7 +83,13 @@ class Directory extends Node {
     if (!node) {
       return
     }
-    this.children.push(node)
+
+    // Insert the node at the sorted position
+    var i = !prevKey ? -1 : _.findLastIndex(this.children, child => {
+      return child.ref.key === prevKey
+    })
+    this.children.splice(i + 1, 0, node)
+
     this._notifyListeners()
   }
 
