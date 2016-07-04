@@ -18,6 +18,7 @@ class BlobStore {
     // Begin upload
     var ref = this.baseStorageRef.child(filename)
     var uploadTask = ref.put(browserFile, {
+      contentDisposition: 'filename="' + browserFile.name + '"',
       customMetadata: {
         filename: browserFile.name,
       }

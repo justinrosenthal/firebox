@@ -163,6 +163,11 @@ const DirectoryView = React.createClass({
 })
 
 const FileRow = React.createClass({
+  handleDownload(e) {
+    e.preventDefault()
+    this.refs.downloadLink.click()
+  },
+
   handleDelete(e) {
     e.preventDefault()
     this.props.file.remove()
@@ -176,8 +181,13 @@ const FileRow = React.createClass({
         <td><a href={data.downloadURL} target="_blank">{data.filename}</a></td>
         <td>{new Date(data.timeCreated).toLocaleString()}</td>
         <td>
+          <a href={data.downloadURL} download ref="downloadLink" />
+          <button className="btn btn-default btn-xs" onClick={this.handleDownload}>
+            <span className="glyphicon glyphicon-save" aria-hidden="true"></span> Download
+          </button>
+
           <button className="btn btn-default btn-xs" onClick={this.handleDelete}>
-            <span className="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete
+            <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
           </button>
         </td>
       </tr>
