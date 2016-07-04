@@ -8,6 +8,10 @@ class Node {
     this.name = name
     this.ref = ref
   }
+
+  remove() {
+    this.ref.remove()
+  }
 }
 
 Node.FILE = 0
@@ -32,6 +36,7 @@ class Directory extends Node {
   register(cb) {
     if (!this.loaded) {
       this.storageRef.on('child_added', this._onChildAdded.bind(this))
+      this.storageRef.on('child_removed', this._onChildRemoved.bind(this))
       this.loaded = true
     } else {
       cb(this.children)
@@ -58,6 +63,12 @@ class Directory extends Node {
     })
   }
 
+  _notifyListeners() {
+    _.each(this.listeners, listener => {
+      listener(this.children)
+    })
+  }
+
   _onChildAdded(data) {
     var node
     switch(data.val().type) {
@@ -71,11 +82,15 @@ class Directory extends Node {
     if (!node) {
       return
     }
-
     this.children.push(node)
-    _.each(this.listeners, listener => {
-      listener(this.children)
+    this._notifyListeners()
+  }
+
+  _onChildRemoved(data) {
+    this.children = _.filter(this.children, child => {
+      return child.ref.key != data.key
     })
+    this._notifyListeners()
   }
 }
 

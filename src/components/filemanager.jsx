@@ -140,7 +140,7 @@ const DirectoryView = React.createClass({
     return (
       <table className="table table-striped">
         <thead>
-          <tr><th></th><th>Name</th><th>Created</th><th>Modified</th></tr>
+          <tr><th></th><th>Name</th><th>Date Created</th><th>Actions</th></tr>
         </thead>
         <tbody>
           {this.state.nodes.map(node => {
@@ -163,6 +163,11 @@ const DirectoryView = React.createClass({
 })
 
 const FileRow = React.createClass({
+  handleDelete(e) {
+    e.preventDefault()
+    this.props.file.remove()
+  },
+
   render() {
     var data = this.props.file.data
     return (
@@ -170,7 +175,11 @@ const FileRow = React.createClass({
         <td><span className="glyphicon glyphicon-file"></span></td>
         <td><a href={data.downloadURL} target="_blank">{data.filename}</a></td>
         <td>{new Date(data.timeCreated).toLocaleString()}</td>
-        <td>{new Date(data.timeModified).toLocaleString()}</td>
+        <td>
+          <button className="btn btn-default btn-xs" onClick={this.handleDelete}>
+            <span className="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete
+          </button>
+        </td>
       </tr>
     )
   }
