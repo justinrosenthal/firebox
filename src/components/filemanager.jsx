@@ -5,6 +5,21 @@ import BlobStore from '../lib/blobstore'
 import {File, Directory, FileSystem} from '../lib/filesystem'
 
 
+const style = {
+  actionButton: {
+    marginRight: 5,
+  },
+
+  actionMenuButton: {
+    display: 'block',
+    width: '100%',
+    marginBottom: 10,
+    color: '#AB5153',
+    fontWeight: 'bold',
+  },
+}
+
+
 const FileManager = React.createClass({
   getInitialState() {
     return {
@@ -65,11 +80,11 @@ const FileManager = React.createClass({
   render() {
     return (
       <div className="row">
-        <div className="col-md-9">
+        <div className="col-md-10">
           <Breadcrumbs directories={this.state.stack} onClickIndex={this.popToIndex} />
           <DirectoryView dir={this.currentDirectory()} pushDirectory={this.pushDirectory} />
         </div>
-        <div className="col-md-3">
+        <div className="col-md-2">
           <ActionMenu
             handleUpload={this.handleUpload}
             handleCreateDirectory={this.handleCreateDirectory}
@@ -140,7 +155,12 @@ const DirectoryView = React.createClass({
     return (
       <table className="table table-striped">
         <thead>
-          <tr><th></th><th>Name</th><th>Date Created</th><th>Actions</th></tr>
+          <tr>
+            <th style={{width: '5%'}}></th>
+            <th className="col-md-4">Name</th>
+            <th className="col-md-2">Created At</th>
+            <th className="col-md-2">Actions</th>
+          </tr>
         </thead>
         <tbody>
           {this.state.nodes.map(node => {
@@ -182,12 +202,12 @@ const FileRow = React.createClass({
         <td>{new Date(data.timeCreated).toLocaleString()}</td>
         <td>
           <a href={data.downloadURL} download ref="downloadLink" />
-          <button className="btn btn-default btn-xs" onClick={this.handleDownload}>
-            <span className="glyphicon glyphicon-save" aria-hidden="true"></span> Download
+          <button className="btn btn-default btn-xs" style={style.actionButton} onClick={this.handleDownload}>
+            <span className="glyphicon glyphicon-save"></span> Download
           </button>
 
-          <button className="btn btn-default btn-xs" onClick={this.handleDelete}>
-            <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete
+          <button className="btn btn-default btn-xs" style={style.actionButton} onClick={this.handleDelete}>
+            <span className="glyphicon glyphicon-trash"></span> Delete
           </button>
         </td>
       </tr>
@@ -245,10 +265,18 @@ const ActionMenu = React.createClass({
           ref="fileInput"
           onChange={this.handleUpload}
         />
-        <ul>
-          <li><a href="#" onClick={this.promptUpload}>Upload a file...</a></li>
-          <li><a href="#" onClick={this.promptDirectory}>Create a directory...</a></li>
-        </ul>
+        <button
+          className="btn btn-default"
+          style={style.actionMenuButton}
+          onClick={this.promptUpload}>
+          Upload...
+        </button>
+        <button
+          className="btn btn-default"
+          style={style.actionMenuButton}
+          onClick={this.promptDirectory}>
+          New Folder
+        </button>
       </div>
     )
   }
