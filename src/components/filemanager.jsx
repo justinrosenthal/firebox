@@ -6,16 +6,46 @@ import {File, Directory, FileSystem} from '../lib/filesystem'
 
 
 const style = {
+  breadcrumbList: {
+    backgroundColor: 'white',
+    borderLeft: '3px solid #AB5153',
+    borderRadius: 0,
+  },
+
+  breadcrumbActive: {
+    color: 'black',
+  },
+
+  actionMenu: {
+    textAlign: 'right',
+  },
+
+  actionMenuLink: {
+    color: 'black',
+    marginLeft: 25,
+  },
+
+  actionMenuIcon: {
+    fontSize: 18,
+    verticalAlign: 'middle',
+    color: '#AB5153',
+  },
+
+  tableHeader: {
+    borderBottom: '1px solid black',
+  },
+
+  nodeIcon: {
+    fontSize: 18,
+  },
+
   actionButton: {
     marginRight: 5,
   },
 
-  actionMenuButton: {
-    display: 'block',
-    width: '100%',
-    marginBottom: 10,
-    color: '#AB5153',
-    fontWeight: 'bold',
+  actionButtonIcon: {
+    fontSize: 18,
+    verticalAlign: 'middle',
   },
 }
 
@@ -79,16 +109,20 @@ const FileManager = React.createClass({
 
   render() {
     return (
-      <div className="row">
-        <div className="col-md-10">
-          <Breadcrumbs directories={this.state.stack} onClickIndex={this.popToIndex} />
-          <DirectoryView dir={this.currentDirectory()} pushDirectory={this.pushDirectory} />
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-9">
+            <Breadcrumbs directories={this.state.stack} onClickIndex={this.popToIndex} />
+          </div>
+          <div className="col-md-3">
+            <ActionMenu
+              handleUpload={this.handleUpload}
+              handleCreateDirectory={this.handleCreateDirectory}
+            />
+          </div>
         </div>
-        <div className="col-md-2">
-          <ActionMenu
-            handleUpload={this.handleUpload}
-            handleCreateDirectory={this.handleCreateDirectory}
-          />
+        <div className="row">
+          <DirectoryView dir={this.currentDirectory()} pushDirectory={this.pushDirectory} />
         </div>
       </div>
     )
@@ -103,10 +137,10 @@ const Breadcrumbs = React.createClass({
 
   render() {
     return (
-      <ol className="breadcrumb">
+      <ol className="breadcrumb" style={style.breadcrumbList}>
         {this.props.directories.map((dir, i) => {
           if (i === this.props.directories.length - 1) {
-            return <li key={dir.ref.key} className="active">{dir.name}</li>
+            return <li key={dir.ref.key} className="active" style={style.breadcrumbActive}>{dir.name}</li>
           } else {
             return (
               <li key={dir.ref.key}>
@@ -156,10 +190,10 @@ const DirectoryView = React.createClass({
       <table className="table table-striped">
         <thead>
           <tr>
-            <th style={{width: '5%'}}></th>
-            <th className="col-md-4">Name</th>
-            <th className="col-md-2">Created At</th>
-            <th className="col-md-2">Actions</th>
+            <th width="3%" style={style.tableHeader}></th>
+            <th width="47%" style={style.tableHeader}>Name</th>
+            <th width="25%" style={style.tableHeader}>Created At</th>
+            <th width="25%" style={style.tableHeader}>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -197,17 +231,25 @@ const FileRow = React.createClass({
     var data = this.props.file.data
     return (
       <tr>
-        <td><span className="glyphicon glyphicon-file"></span></td>
+        <td><i className="material-icons" style={style.nodeIcon}>insert_drive_file</i></td>
         <td><a href={data.downloadURL} target="_blank">{data.filename}</a></td>
         <td>{new Date(data.timeCreated).toLocaleString()}</td>
         <td>
           <a href={data.downloadURL} download ref="downloadLink" />
-          <button className="btn btn-default btn-xs" style={style.actionButton} onClick={this.handleDownload}>
-            <span className="glyphicon glyphicon-save"></span> Download
+          <button
+            className="btn btn-default btn-xs"
+            style={style.actionButton}
+            title="Download"
+            onClick={this.handleDownload}>
+            <i className="material-icons" style={style.actionButtonIcon}>file_download</i>
           </button>
 
-          <button className="btn btn-default btn-xs" style={style.actionButton} onClick={this.handleDelete}>
-            <span className="glyphicon glyphicon-trash"></span> Delete
+          <button
+            className="btn btn-default btn-xs"
+            style={style.actionButton}
+            title="Delete"
+            onClick={this.handleDelete}>
+            <i className="material-icons" style={style.actionButtonIcon}>delete</i>
           </button>
         </td>
       </tr>
@@ -224,14 +266,14 @@ const DirectoryRow = React.createClass({
   render() {
     return (
       <tr>
-        <td><span className="glyphicon glyphicon-folder-open"></span></td>
+        <td><i className="material-icons" style={style.nodeIcon}>folder</i></td>
         <td>
           <a href="#" onClick={this.onClick}>
             {this.props.dir.name}
           </a>
         </td>
-        <td></td>
-        <td></td>
+        <td>-</td>
+        <td>-</td>
       </tr>
     )
   }
@@ -257,7 +299,7 @@ const ActionMenu = React.createClass({
 
   render() {
     return (
-      <div>
+      <div style={style.actionMenu}>
         <input
           type="file"
           multiple
@@ -265,18 +307,12 @@ const ActionMenu = React.createClass({
           ref="fileInput"
           onChange={this.handleUpload}
         />
-        <button
-          className="btn btn-default"
-          style={style.actionMenuButton}
-          onClick={this.promptUpload}>
-          Upload...
-        </button>
-        <button
-          className="btn btn-default"
-          style={style.actionMenuButton}
-          onClick={this.promptDirectory}>
-          New Folder
-        </button>
+        <a href="#" style={style.actionMenuLink} onClick={this.promptUpload}>
+          <i className="material-icons" style={style.actionMenuIcon}>file_upload</i> Upload
+        </a>
+        <a href="#" style={style.actionMenuLink} onClick={this.promptDirectory}>
+          <i className="material-icons" style={style.actionMenuIcon}>create_new_folder</i> New Folder
+        </a>
       </div>
     )
   }

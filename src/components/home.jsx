@@ -16,6 +16,10 @@ const style = {
     height: 35,
     marginTop: -7,
   },
+
+  navBrand: {
+    color: 'black',
+  },
 }
 
 
@@ -46,7 +50,7 @@ const Nav = React.createClass({
             </Link>
           </div>
           <div className="navbar-header">
-            <Link to="/home" className="navbar-brand">
+            <Link to="/home" className="navbar-brand" style={style.navBrand}>
               Firebox
             </Link>
           </div>

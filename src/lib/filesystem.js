@@ -105,7 +105,7 @@ class FileSystem {
   constructor(user) {
     this.user = user
     this.root = new Directory(
-      'Home',
+      'Your Files',
       firebase.database().ref('files/' + user.uid).child('root')
     )
   }
