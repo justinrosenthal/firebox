@@ -7,8 +7,16 @@ import FileManager from './filemanager'
 
 
 const style = {
-  homeContainer: {
-    padding: 20,
+  navBar: {
+    padding: '15px 30px',
+    backgroundColor: '#F8F8F8',
+    borderBottom: '1px solid #E7E7E7',
+  },
+
+  navBrand: {
+    margin: 0,
+    padding: 0,
+    fontSize: 22,
   },
 
   navLogo: {
@@ -17,8 +25,16 @@ const style = {
     marginTop: -7,
   },
 
-  navBrand: {
-    color: 'black',
+  navRight: {
+    float: 'right',
+  },
+
+  navEmail: {
+    marginRight: 10,
+  },
+
+  bodyContainer: {
+    padding: 30,
   },
 }
 
@@ -26,9 +42,11 @@ const style = {
 const Home = React.createClass({
   render() {
     return (
-      <div style={style.homeContainer}>
+      <div>
         <Nav user={this.props.user} />
-        <FileManager user={this.props.user} />
+        <div style={style.bodyContainer}>
+          <FileManager user={this.props.user} />
+        </div>
       </div>
     )
   }
@@ -42,27 +60,16 @@ const Nav = React.createClass({
 
   render() {
     return (
-      <nav className="navbar navbar-default">
-        <div className="container-fluid">
-          <div className="navbar-header">
-            <Link to="/home" className="navbar-brand">
-              <img style={style.navLogo} src="/img/FireboxBrand.png" />
-            </Link>
-          </div>
-          <div className="navbar-header">
-            <Link to="/home" className="navbar-brand" style={style.navBrand}>
-              Firebox
-            </Link>
-          </div>
-
-          <form onSubmit={this.handleLogout} className="navbar-form navbar-right">
-            <button type="submit" className="btn btn-default">Logout</button>
-          </form>
-          <p className="navbar-text navbar-right">
-            {this.props.user.email}
-          </p>
+      <div style={style.navBar}>
+        <div style={style.navRight}>
+          <span style={style.navEmail}>{this.props.user.email}</span>
+          <button onClick={this.handleLogout} className="btn btn-default">Logout</button>
         </div>
-      </nav>
+
+        <h1 style={style.navBrand}>
+          <img style={style.navLogo} src="/img/FireboxBrand.png" /> Firebox
+        </h1>
+      </div>
     )
   }
 })

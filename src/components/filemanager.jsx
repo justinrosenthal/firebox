@@ -6,9 +6,20 @@ import {File, Directory, FileSystem} from '../lib/filesystem'
 
 
 const style = {
+  header: {
+    width: '100%',
+    overflow: 'auto',
+    marginBottom: 30,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
   breadcrumbList: {
+    float: 'left',
+    margin: 0,
+    padding: '0px 0px 0px 10px',
     backgroundColor: 'white',
-    borderLeft: '3px solid #AB5153',
+    borderLeft: '5px solid #AB5153',
     borderRadius: 0,
   },
 
@@ -17,6 +28,7 @@ const style = {
   },
 
   actionMenu: {
+    float: 'right',
     textAlign: 'right',
   },
 
@@ -26,7 +38,7 @@ const style = {
   },
 
   actionMenuIcon: {
-    fontSize: 18,
+    fontSize: 22,
     verticalAlign: 'middle',
     color: '#AB5153',
   },
@@ -109,21 +121,15 @@ const FileManager = React.createClass({
 
   render() {
     return (
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-9">
-            <Breadcrumbs directories={this.state.stack} onClickIndex={this.popToIndex} />
-          </div>
-          <div className="col-md-3">
-            <ActionMenu
-              handleUpload={this.handleUpload}
-              handleCreateDirectory={this.handleCreateDirectory}
-            />
-          </div>
+      <div>
+        <div style={style.header}>
+          <Breadcrumbs directories={this.state.stack} onClickIndex={this.popToIndex} />
+          <ActionMenu
+            handleUpload={this.handleUpload}
+            handleCreateDirectory={this.handleCreateDirectory}
+          />
         </div>
-        <div className="row">
-          <DirectoryView dir={this.currentDirectory()} pushDirectory={this.pushDirectory} />
-        </div>
+        <DirectoryView dir={this.currentDirectory()} pushDirectory={this.pushDirectory} />
       </div>
     )
   }
