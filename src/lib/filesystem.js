@@ -9,6 +9,9 @@ class Node {
     this.ref = ref
   }
 
+  close() {
+  }
+
   remove() {
     this.ref.remove()
   }
@@ -30,16 +33,31 @@ class Directory extends Node {
     this.storageRef = ref.key === 'root' ? ref : ref.parent.parent.child(ref.key)
     this.children = [];
     this.listeners = [];
-    this.loaded = false;
+  }
+
+  open() {
+    if (!this.query) {
+      this.query = this.storageRef.orderByChild('name')
+      this.query.on('child_added', this._onChildAdded.bind(this))
+      this.query.on('child_removed', this._onChildRemoved.bind(this))
+      return true
+    }
+    return false
+  }
+
+  close() {
+    this.children.forEach(child => {
+      child.close()
+    })
+
+    if (this.query) {
+      this.query.off()
+      delete this.query
+    }
   }
 
   register(cb) {
-    if (!this.loaded) {
-      var q = this.storageRef.orderByChild('name')
-      q.on('child_added', this._onChildAdded.bind(this))
-      q.on('child_removed', this._onChildRemoved.bind(this))
-      this.loaded = true
-    } else {
+    if (!this.open()) {
       cb(this.children)
     }
     this.listeners.push(cb)
@@ -50,6 +68,9 @@ class Directory extends Node {
   }
 
   addFile(name, data) {
+    if (!name) {
+      return
+    }
     this.storageRef.push({
       type: Node.FILE,
       name: name,
@@ -58,6 +79,9 @@ class Directory extends Node {
   }
 
   addDirectory(name) {
+    if (!name) {
+      return
+    }
     this.storageRef.push({
       type: Node.DIRECTORY,
       name: name,
@@ -108,6 +132,10 @@ class Filesystem {
       'Your Files',
       firebase.database().ref('files/' + user.uid).child('root')
     )
+  }
+
+  close() {
+    this.root.close()
   }
 }
 

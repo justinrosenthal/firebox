@@ -32,6 +32,10 @@ const FileManager = React.createClass({
     this.pushDirectory(this.fs.root)
   },
 
+  componentWillUnmount() {
+    this.fs.close()
+  },
+
   currentDirectory() {
     return this.state.stack[this.state.stack.length - 1]
   },
