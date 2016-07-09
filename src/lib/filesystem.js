@@ -130,7 +130,7 @@ class Filesystem {
     this.user = user
     this.root = new Directory(
       'Your Files',
-      firebase.database().ref('files/' + user.uid).child('root')
+      firebase.database().ref('users/' + user.uid + '/files/root')
     )
   }
 
