@@ -47,11 +47,21 @@ const style = {
     borderBottom: '1px solid black',
   },
 
+  tableRow: {
+    height: 50,
+  },
+
+  tableCell: {
+    verticalAlign: 'middle',
+  },
+
   nodeIcon: {
     fontSize: 18,
   },
 
   actionButton: {
+    width: 30,
+    height: 30,
     marginRight: 5,
   },
 
@@ -236,11 +246,17 @@ const FileRow = React.createClass({
   render() {
     var data = this.props.file.data
     return (
-      <tr>
-        <td><i className="material-icons" style={style.nodeIcon}>insert_drive_file</i></td>
-        <td><a href={data.downloadURL} target="_blank">{data.filename}</a></td>
-        <td>{new Date(data.timeCreated).toLocaleString()}</td>
-        <td>
+      <tr style={style.tableRow}>
+        <td style={style.tableCell}>
+          <i className="material-icons" style={style.nodeIcon}>insert_drive_file</i>
+        </td>
+        <td style={style.tableCell}>
+          <a href={data.downloadURL} target="_blank">{data.filename}</a>
+        </td>
+        <td style={style.tableCell}>
+          {new Date(data.timeCreated).toLocaleString()}
+        </td>
+        <td style={style.tableCell}>
           <a href={data.downloadURL} download ref="downloadLink" />
           <button
             className="btn btn-default btn-xs"
@@ -271,15 +287,17 @@ const DirectoryRow = React.createClass({
 
   render() {
     return (
-      <tr>
-        <td><i className="material-icons" style={style.nodeIcon}>folder</i></td>
-        <td>
+      <tr style={style.tableRow}>
+        <td style={style.tableCell}>
+          <i className="material-icons" style={style.nodeIcon}>folder</i>
+        </td>
+        <td style={style.tableCell}>
           <a href="#" onClick={this.onClick}>
             {this.props.dir.name}
           </a>
         </td>
-        <td>-</td>
-        <td>-</td>
+        <td style={style.tableCell}>-</td>
+        <td style={style.tableCell}>-</td>
       </tr>
     )
   }
