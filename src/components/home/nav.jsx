@@ -1,9 +1,5 @@
-import _ from 'lodash'
 import firebase from 'firebase'
 import React from 'react'
-import {Link} from 'react-router'
-
-import FileManager from './filemanager'
 
 
 const style = {
@@ -38,20 +34,6 @@ const style = {
   },
 }
 
-
-const Home = React.createClass({
-  render() {
-    return (
-      <div>
-        <Nav user={this.props.user} />
-        <div style={style.bodyContainer}>
-          <FileManager user={this.props.user} />
-        </div>
-      </div>
-    )
-  }
-})
-
 const Nav = React.createClass({
   handleLogout(e) {
     e.preventDefault()
@@ -75,4 +57,4 @@ const Nav = React.createClass({
 })
 
 
-export default Home
+export default Nav

@@ -101,7 +101,7 @@ class Directory extends Node {
   }
 }
 
-class FileSystem {
+class Filesystem {
   constructor(user) {
     this.user = user
     this.root = new Directory(
@@ -112,4 +112,4 @@ class FileSystem {
 }
 
 
-export {File, Directory, FileSystem}
+export {File, Directory, Filesystem}

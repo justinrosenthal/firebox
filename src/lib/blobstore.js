@@ -1,7 +1,7 @@
 import firebase from 'firebase'
 
 
-class BlobStore {
+class Blobstore {
   constructor(user) {
     this.user = user
     this.baseStorageRef = firebase.storage().ref('u/' + user.uid)
@@ -32,4 +32,4 @@ class BlobStore {
 }
 
 
-export default BlobStore
+export default Blobstore
