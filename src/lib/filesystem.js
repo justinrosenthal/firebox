@@ -31,8 +31,9 @@ class Directory extends Node {
   constructor(name, ref) {
     super(Node.DIRECTORY, name, ref)
     this.storageRef = ref.key === 'root' ? ref : ref.parent.parent.child(ref.key)
-    this.children = [];
-    this.listeners = [];
+    this.loading = true
+    this.children = []
+    this.listeners = []
   }
 
   open() {
@@ -40,6 +41,10 @@ class Directory extends Node {
       this.query = this.storageRef.orderByChild('name')
       this.query.on('child_added', this._onChildAdded.bind(this))
       this.query.on('child_removed', this._onChildRemoved.bind(this))
+      this.query.limitToFirst(1).once('value', () => {
+        this.loading = false
+        this._notifyListeners()
+      })
       return true
     }
     return false
@@ -89,6 +94,9 @@ class Directory extends Node {
   }
 
   _notifyListeners() {
+    if (this.loading) {
+      return
+    }
     _.each(this.listeners, listener => {
       listener(this.children)
     })

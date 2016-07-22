@@ -36,7 +36,7 @@ const style = {
 const DirectoryView = React.createClass({
   getInitialState() {
     return {
-      nodes: [],
+      nodes: undefined,
     }
   },
 
@@ -52,7 +52,7 @@ const DirectoryView = React.createClass({
   },
 
   load(props) {
-    this.setState({nodes: []})
+    this.setState({nodes: undefined})
     props.dir.register(this.onDirectoryChanged)
   },
 
@@ -65,32 +65,48 @@ const DirectoryView = React.createClass({
   },
 
   render() {
+    var body, footer
+    if (this.state.nodes === undefined) {
+      footer = (
+        <div style={{textAlign: 'center'}}>
+          <i className="material-icons">sync</i>
+        </div>
+      )
+    } else if (!this.state.nodes.length) {
+      footer = (<div style={{textAlign: 'center'}}>Empty folder</div>)
+    } else {
+      body = this.state.nodes.map(node => {
+        if (node instanceof File) {
+          return <FileRow file={node} key={node.ref.key} />
+        } else if (node instanceof Directory) {
+          return (
+            <DirectoryRow
+              dir={node}
+              key={node.ref.key}
+              onClick={this.onDirectoryClicked}
+            />
+          )
+        }
+      })
+    }
+
     return (
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th width="3%" style={style.tableHeader}></th>
-            <th width="47%" style={style.tableHeader}>Name</th>
-            <th width="25%" style={style.tableHeader}>Created At</th>
-            <th width="25%" style={style.tableHeader}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {this.state.nodes.map(node => {
-            if (node instanceof File) {
-              return <FileRow file={node} key={node.ref.key} />
-            } else if (node instanceof Directory) {
-              return (
-                <DirectoryRow
-                  dir={node}
-                  key={node.ref.key}
-                  onClick={this.onDirectoryClicked}
-                />
-              )
-            }
-          })}
-        </tbody>
-      </table>
+      <div>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th width="3%" style={style.tableHeader}></th>
+              <th width="47%" style={style.tableHeader}>Name</th>
+              <th width="25%" style={style.tableHeader}>Created At</th>
+              <th width="25%" style={style.tableHeader}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {body}
+          </tbody>
+        </table>
+        {footer}
+      </div>
     )
   }
 })
